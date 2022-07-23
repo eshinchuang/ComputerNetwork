@@ -1,0 +1,5 @@
+all:client.cpp server.cpp
+	gcc -g -o client client.cpp -lstdc++
+	gcc -g -o  server server.cpp -lstdc++
+clean:
+	rm -f client server

@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+#include<unistd.h>
+#include<netinet/in.h>
+#include<sys/types.h>
+#include<sys/socket.h> 
+#include<arpa/inet.h>
+using namespace std;
+
+void Server_Request_Procedure(int stream){
+	int req, n = 0;
+	bool doing = true;
+	char buf[100];
+	while(doing){
+		bzero(buf, sizeof(buf));
+		cout << "What's your requirement? 1.DNS 2.QUERY 3.QUIT :";
+		
+		cin >> buf;
+		write(stream, buf, sizeof(buf) ); 
+		req = atoi(buf);
+		n = 0;
+		switch(req) {
+		case 1:
+			bzero(buf, sizeof(buf));	
+			cout << "Input URL address :";
+			cin >> buf;			
+			write(stream, buf, sizeof(buf) );
+			
+			bzero(buf, sizeof(buf));
+			read(stream, buf, sizeof(buf));
+			cout << "address get from domain name : "<<buf << endl;
+			break;
+		case 2:
+			cout << "Input student ID :";
+			cin >> buf;
+			write(stream, buf, sizeof(buf) );
+
+			bzero(buf, sizeof(buf));
+			read(stream, buf, sizeof(buf));
+			cout << "Email get from sever : "<< buf << endl;
+			break;
+		case 3:
+			doing = false;
+			break;
+		}
+	}
+	return;
+}
+
+int main(){
+	struct sockaddr_in server_addr;	
+	int sockfd, status;	
+	
+	//setup the server address	
+	server_addr.sin_family = PF_INET;	
+	server_addr.sin_port = htons(5000);	
+	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");	
+	//connect to the server	
+	sockfd = socket (PF_INET, SOCK_STREAM, 0);
+	
+	connect (sockfd, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_in));	
+	
+	
+
+	Server_Request_Procedure(sockfd); 
+	
+
+	close(sockfd);	
+	return 0;
+
+}
+
